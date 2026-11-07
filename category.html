@@ -1,0 +1,164 @@
+// Supabase Configuration
+const SUPABASE_URL = "https://faynrrznpebyydolcvka.supabase.co";
+const SUPABASE_KEY = "sb_publishable_E-GSwmmuw0WjkUi9RzR7Vg_2zR6TLL7";
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let allItems = [];
+let selectedCat = 'ALL';
+let selectedFilter = 'all';
+
+window.toggleTheme = function() {
+    const body = document.body;
+    body.classList.toggle('light-theme');
+};
+
+async function loadData() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const catParam = urlParams.get('cat');
+    if (catParam) {
+        selectedCat = catParam.toUpperCase();
+        document.querySelectorAll('.cat-sidebar-item').forEach(el => {
+            if (el.textContent.toUpperCase().includes(selectedCat)) {
+                document.querySelector('.cat-sidebar-item.active')?.classList.remove('active');
+                el.classList.add('active');
+            }
+        });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from("games")
+            .select("*")
+            .order("createdAt", { ascending: false });
+
+        if (error) throw error;
+
+        let rawGames = (data || []).map(game => {
+            let timeVal = 0;
+            if (game.createdAt) {
+                timeVal = new Date(game.createdAt).getTime() || 0;
+            }
+            return { ...game, createdAtVal: timeVal };
+        });
+
+        const uniqueMap = new Map();
+        rawGames.forEach(g => {
+            if (!uniqueMap.has(g.id)) {
+                uniqueMap.set(g.id, g);
+            }
+        });
+
+        allItems = Array.from(uniqueMap.values());
+        filterAndRender();
+    } catch (e) {
+        console.error("Load error:", e);
+        document.getElementById('catGamesList').innerHTML = `<div style="text-align:center; padding:40px; color:#ff5252;">❌ ဒေတာများ Load လုပ်၍မရပါ။ (${e.message})</div>`;
+    }
+}
+
+window.selectCategory = function(cat, el) {
+    selectedCat = cat;
+    document.querySelectorAll('.cat-sidebar-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    filterAndRender();
+};
+
+window.selectFilter = function(filter, el) {
+    selectedFilter = filter;
+    document.querySelectorAll('.filter-pill').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    filterAndRender();
+};
+
+function filterAndRender() {
+    const container = document.getElementById('catGamesList');
+    if (!container) return;
+
+    let filtered = allItems.filter(item => {
+        const platform = String(item.platform || "").toUpperCase();
+        const category = String(item.category || "").toUpperCase();
+        const type = String(item.type || "").toUpperCase();
+        const features = Array.isArray(item.features) ? item.features.join(" ").toUpperCase() : String(item.features || "").toUpperCase();
+        const name = String(item.name || item.title || "").toUpperCase();
+        
+        const fullText = `${platform} ${category} ${type} ${features} ${name}`;
+
+        if (selectedCat === 'ALL') {
+            return true;
+        } else if (selectedCat === 'APP') {
+            return platform === 'APP' || category.includes('APP') || category.includes('UTILITY') || category.includes('TOOL');
+        } else if (selectedCat === 'SMALL') {
+            return item.isSmallGame === true || item.isSmallGame === "true" || platform === 'SMALL' || fullText.includes('SMALL');
+        } else if (selectedCat === 'OPEN WORLD') {
+            return fullText.includes('OPEN WORLD') || fullText.includes('OPENWORLD');
+        } else if (selectedCat === 'WAR GAMES') {
+            return fullText.includes('WAR') || fullText.includes('MILITARY') || fullText.includes('BATTLE');
+        } else if (selectedCat === 'SHOOTING') {
+            return fullText.includes('SHOOTING') || fullText.includes('SHOOTER') || fullText.includes('GUN');
+        } else if (selectedCat === 'RTS') {
+            return fullText.includes('RTS') || fullText.includes('REAL TIME STRATEGY');
+        } else if (selectedCat === 'COZY') {
+            return fullText.includes('COZY') || fullText.includes('RELAXING') || fullText.includes('FARMING');
+        } else if (selectedCat === 'SIMULATION') {
+            return fullText.includes('SIMULATION');
+        } else if (selectedCat === 'SIMULATOR') {
+            return fullText.includes('SIMULATOR') || fullText.includes('SIM');
+        } else if (selectedCat === 'HUNTING') {
+            return fullText.includes('HUNTING') || fullText.includes('HUNTER');
+        } else if (selectedCat === 'HACK & SLASH') {
+            return fullText.includes('HACK') || fullText.includes('SLASH') || fullText.includes('HACK&SLASH');
+        } else {
+            return fullText.includes(selectedCat);
+        }
+    });
+
+    if (selectedFilter === 'new') {
+        filtered = filtered.filter(i => i.isNew === true || i.isNew === "true");
+    } else if (selectedFilter === 'hot') {
+        filtered = filtered.filter(i => i.isHot === true || i.isHot === "true");
+    } else if (selectedFilter === 'popular') {
+        filtered = filtered.filter(i => !i.isHot && !i.isNew);
+    } else if (selectedFilter === 'update') {
+        filtered = filtered.filter(i => i.isUpdate === true || i.isUpdate === "true");
+    }
+
+    filtered.sort((a, b) => b.createdAtVal - a.createdAtVal);
+
+    if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:#aaa;">အချက်အလက်များ မရှိသေးပါ။</div>`;
+        return;
+    }
+
+    container.innerHTML = filtered.map(game => {
+        const iconImg = game.icon || game.image || "";
+        const name = game.name || game.title || "Unknown";
+        const size = game.size || "45 MB";
+        const version = game.version ? `v${game.version}` : "v1.0.0";
+        const modInfo = game.type === "MOD" ? "⚡ Unlimited Resources / Mod" : (game.features ? game.features[0] : "Official Version");
+
+        return `
+            <a href="detail.html?id=${escapeHTML(game.id)}" class="cat-game-card">
+                <img src="${escapeHTML(iconImg)}" alt="${escapeHTML(name)}" class="cat-game-icon" onerror="this.src='default.png'">
+                <div class="cat-game-info">
+                    <div class="cat-game-title">${escapeHTML(name)}</div>
+                    <div class="cat-game-meta">
+                        <span>📥 ${escapeHTML(size)}</span>
+                        <span>•</span>
+                        <span>${escapeHTML(version)}</span>
+                    </div>
+                    <div class="cat-game-mod">🛠️ ${escapeHTML(modInfo)}</div>
+                </div>
+            </a>
+        `;
+    }).join('');
+}
+
+function escapeHTML(value) {
+    if (value === null || value === undefined) return "";
+    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+loadData();

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Categories - AKL Gaming HUB</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="mainApp">
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhjOc0nKLw9Dc7vnEr9MiYcpWJEsdxc30AZG07u_xkNzREy_G8796CK-cMwHh5julpufaRncCnlcgor4kan41hz1AMI6APrPO9irLlETgRcab-Dqz3jVYvVt9GWxKgr9_aoMyZhxCWfRUf7JyCNg24GWF6vnRWArt8S70f4ircALsXcWACU6nteQvSKZ8Q/s1283/44700.png" alt="AKL Gaming HUB Logo">
+                </div>
+                <span class="logo-text">AKL Gaming HUB</span>
+            </div>
+            
+            <div style="display: flex; align-items: center;">
+                <a href="https://t.me/s/aklgamesharing" target="_blank" rel="noopener noreferrer" class="tg-header-btn">📢 Join TG</a>
+                <button type="button" id="themeToggleBtn" onclick="toggleTheme()" style="background:none; border:none; cursor:pointer; font-size:20px; padding:5px;">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content" style="padding-top: 20px; padding-bottom: 90px;">
+        <h2 class="section-title" style="margin-bottom: 15px;">📂 All Categories</h2>
+        
+        <!-- Categories Grid List -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;" id="categoriesGrid">
+            <a href="category.html?cat=HOT&type=game" class="cat-grid-card" style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 14px; text-align: center; text-decoration: none; color: var(--text-color); display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-fire" style="font-size: 24px; color: var(--accent-color);"></i>
+                <span style="font-weight: 700; font-size: 14px;">Editor's Choice</span>
+            </a>
+            <a href="category.html?cat=NEW&type=game" class="cat-grid-card" style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 14px; text-align: center; text-decoration: none; color: var(--text-color); display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-bolt" style="font-size: 24px; color: var(--accent-color);"></i>
+                <span style="font-weight: 700; font-size: 14px;">Top New Games</span>
+            </a>
+            <a href="category.html?cat=POPULAR&type=game" class="cat-grid-card" style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 14px; text-align: center; text-decoration: none; color: var(--text-color); display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-trophy" style="font-size: 24px; color: var(--accent-color);"></i>
+                <span style="font-weight: 700; font-size: 14px;">Popular Games</span>
+            </a>
+            <a href="category.html?cat=UPDATE&type=game" class="cat-grid-card" style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 14px; text-align: center; text-decoration: none; color: var(--text-color); display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-rotate" style="font-size: 24px; color: var(--accent-color);"></i>
+                <span style="font-weight: 700; font-size: 14px;">Update Games</span>
+            </a>
+            <a href="category.html?cat=SMALL&type=game" class="cat-grid-card" style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 14px; text-align: center; text-decoration: none; color: var(--text-color); display: flex; flex-direction: column; align-items: center; gap: 8px; grid-column: span 2;">
+                <i class="fa-solid fa-gamepad" style="font-size: 24px; color: var(--accent-color);"></i>
+                <span style="font-weight: 700; font-size: 14px;">Small Games & Apps</span>
+            </a>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <button type="button" class="nav-item" data-page="home" onclick="window.location.href='index.html'">🏠 Home</button>
+        <button type="button" class="nav-item active" data-page="categories" onclick="window.location.href='categories.html'">📂 Categories</button>
+    </nav>
+</div>
+
+<script>
+    // Theme Switcher for Categories Page
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.getElementById('themeToggleBtn');
+        body.classList.toggle('light-theme');
+        if (body.classList.contains('light-theme')) {
+            btn.textContent = '☀️';
+            localStorage.setItem('theme', 'light');
+        } else {
+            btn.textContent = '🌙';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem('theme');
+        const btn = document.getElementById('themeToggleBtn');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            if (btn) btn.textContent = '☀️';
+        }
+    });
+</script>
+</body>
+</html>

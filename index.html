@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AKL Gaming HUB</title>
+<link rel="stylesheet" href="style.css">
+<style>
+    /* Icon Row Horizontal Scroll Style */
+    .icon-scroll-row {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        scrollbar-width: none;
+    }
+    .icon-scroll-row::-webkit-scrollbar { display: none; }
+    
+    .icon-card-item {
+        min-width: 80px;
+        max-width: 80px;
+        text-decoration: none;
+        color: inherit;
+        flex-shrink: 0;
+        text-align: center;
+    }
+    .icon-card-img-box {
+        width: 80px;
+        height: 80px;
+        border-radius: 18px;
+        overflow: hidden;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .icon-card-img-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .icon-card-title {
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--text-color);
+    }
+
+    /* Small Games Vertical Stack in Horizontal Scroll */
+    .small-games-grid-row {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        scrollbar-width: none;
+    }
+    .small-games-grid-row::-webkit-scrollbar { display: none; }
+    
+    .small-games-column {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 260px;
+        max-width: 260px;
+        flex-shrink: 0;
+    }
+    .small-game-mini-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 8px;
+        text-decoration: none;
+        color: inherit;
+    }
+    .small-game-mini-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 1px solid var(--card-border);
+    }
+
+    /* Large Banner Horizontal Card Style */
+    .banner-card-scroll-row {
+        display: flex;
+        gap: 15px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        scrollbar-width: none;
+    }
+    .banner-card-scroll-row::-webkit-scrollbar { display: none; }
+
+    .large-banner-card {
+        min-width: 290px;
+        max-width: 290px;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        overflow: hidden;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .large-banner-img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        background: var(--search-bg);
+    }
+    .large-banner-details {
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+    .banner-info-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        flex: 1;
+    }
+    .banner-icon-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 1px solid var(--card-border);
+    }
+    .banner-text-group {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .banner-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .banner-meta {
+        font-size: 11px;
+        color: var(--text-muted);
+    }
+    .banner-mod {
+        font-size: 10px;
+        color: #00bcd4;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .play-btn-pill {
+        background: #00e676;
+        color: #000;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 6px 12px;
+        border-radius: 20px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    /* Auto Slider Banner */
+    .hero-banner-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        height: 180px;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        margin-bottom: 20px;
+    }
+    .banner-slider-track { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }
+    .banner-slide-item { min-width: 100%; height: 100%; flex-shrink: 0; }
+    .banner-slide-item img { width: 100%; height: 100%; object-fit: cover; }
+
+    .telegram-banner-card {
+        background: linear-gradient(135deg, #0088cc 0%, #005580 100%);
+        border-radius: 16px;
+        padding: 20px 15px;
+        text-align: center;
+        color: #ffffff;
+        margin: 25px 0 20px 0;
+    }
+    .telegram-join-btn {
+        display: inline-block; background: #ffffff; color: #0088cc; font-size: 13px; font-weight: 800; padding: 8px 18px; border-radius: 20px; text-decoration: none; margin-top: 10px;
+    }
+    .app-footer { text-align: center; padding: 15px 0 25px 0; color: var(--text-muted); font-size: 12px; }
+    .app-footer-links { display: flex; justify-content: center; gap: 15px; margin-top: 8px; }
+    .app-footer-links a { color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div id="splashScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0a; display: flex; align-items: center; justify-content: center; z-index: 99999;">
+    <div class="splash-content" style="text-align: center;">
+        <div class="splash-icon"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjdlp1fH2LNUM_d5_6HInbfrVXdgNKSgB_93NNHAhGdxyruSsyo6qp-Ly9-c6jV6OaKJEFStGsZZSnstu14zPl-qz5QdTAJNLzxieVPDocLnfbnnrIih1rQNU0XX3cuxXhC1YlSPBk4RLuNLePJaTP3kE2AFnXcE4nwYhPdP8aIwCMPGDmgFcBnR8kGmhU/s1280/44697.png" alt="Logo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 15px;"></div>
+        <h1 class="splash-title" style="color: #fff; font-size: 24px; margin-bottom: 20px;">AKL Gaming HUB</h1>
+        <div class="splash-loader" style="width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid #ffd700; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+    </div>
+</div>
+
+<div id="mainApp" style="display:none;">
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhjOc0nKLw9Dc7vnEr9MiYcpWJEsdxc30AZG07u_xkNzREy_G8796CK-cMwHh5julpufaRncCnlcgor4kan41hz1AMI6APrPO9irLlETgRcab-Dqz3jVYvVt9GWxKgr9_aoMyZhxCWfRUf7JyCNg24GWF6vnRWArt8S70f4ircALsXcWACU6nteQvSKZ8Q/s1283/44700.png" alt="Logo">
+                </div>
+                <span class="logo-text">AKL Gaming HUB</span>
+            </div>
+            
+            <div style="display: flex; align-items: center;">
+                <a href="https://t.me/s/aklgamesharing" target="_blank" rel="noopener noreferrer" class="tg-header-btn">📢 Join TG</a>
+                <button type="button" id="themeToggleBtn" onclick="toggleTheme()" style="background:none; border:none; cursor:pointer; font-size:20px; padding:5px;">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- ဘန်နာဆလိုက်ရှိုး -->
+        <section style="margin-top: 6px; margin-bottom: 4px;">
+            <div class="hero-banner-card" id="heroBannerCard"></div>
+        </section>
+
+        <!-- သတိပေးစာ စာတန်းပြေး -->
+        <div class="running-notice-container" style="margin-top: 0px; margin-bottom: 8px;">
+            <div class="running-notice-text" id="runningNoticeText">
+                💡 ဂိမ်းဒေါင်းလုဒ်လုပ်တာ အဆင်မပြေဖြစ်ခဲ့ရင် အပေါ်ဘက်ရှိ 📢 Join TG လင့်ခ်ကနေတစ်ဆင့် ဂိမ်းဒေါင်းနည်းကို ဝင်ရောက်ကြည့်ရှုနိုင်ပါတယ်ခင်ဗျာ 🚀
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container" style="margin-bottom: 15px;">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="ဂိမ်းများနှင့် အက်ပ်များကို ရှာရန်..." class="search-input">
+            </div>
+        </div>
+
+        <!-- Dynamic Sections Container -->
+        <div id="dynamicSectionsContainer">
+            <p style="text-align: center; color: var(--text-muted); padding: 30px;">ဂိမ်းများကို ရှာဖွေနေပါသည်...</p>
+        </div>
+
+        <!-- Telegram Banner -->
+        <div class="telegram-banner-card">
+            <div style="font-size: 16px; font-weight: 800; margin-bottom: 6px;">📢 Telegram Channel သို့ ဝင်ရောက်ပါ</div>
+            <div style="font-size: 12px; opacity: 0.9; margin-bottom: 10px;">ဂိမ်းအသစ်တွေနဲ့ Update တွေကို စောစောစီးစီး သိရအောင် Join ထားပါ။</div>
+            <a href="https://t.me/s/aklgamesharing" target="_blank" class="telegram-join-btn">🔗 ချန်နယ်သို့ ဝင်မည်</a>
+        </div>
+
+        <!-- Copyright Footer -->
+        <footer class="app-footer">
+            <div>© 2026 AKL GAMING HUB</div>
+            <div class="app-footer-links">
+                <a href="privacy.html">PRIVACY POLICY</a>
+                <a href="dmca.html">DMCA</a>
+                <a href="contact.html">CONTACT</a>
+            </div>
+        </footer>
+    </main>
+
+    <nav class="bottom-nav">
+        <button type="button" class="nav-item active" data-page="home" onclick="goHomePage()">🏠 ပင်မစာမျက်နှာ</button>
+        <a href="category.html?cat=ALL&type=game" class="nav-item" style="text-decoration:none; color:inherit;">📂 အမျိုးအစားများ</a>
+    </nav>
+</div>
+
+<style>
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+
+<script>
+    setTimeout(function() {
+        var splash = document.getElementById('splashScreen');
+        var main = document.getElementById('mainApp');
+        if (splash) splash.style.display = 'none';
+        if (main) main.style.display = 'block';
+    }, 800);
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
