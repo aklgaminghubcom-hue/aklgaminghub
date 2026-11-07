@@ -4,7 +4,9 @@ const SUPABASE_KEY = "sb_publishable_E-GSwmmuw0WjkUi9RzR7Vg_2zR6TLL7";
 
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: { persistSession: false }
+});
 
 let allItems = [];
 let selectedCat = 'ALL';
@@ -28,11 +30,21 @@ async function loadData() {
         });
     }
 
+    const CACHE_KEY = "akl_cached_games";
+    const cachedData = localStorage.getItem(CACHE_KEY);
+
     try {
-        const { data, error } = await supabase
+        // Mobile Data လိုင်းတွေအတွက် 15 seconds Timeout ထည့်ထားခြင်း
+        const fetchPromise = supabase
             .from("games")
             .select("*")
             .order("createdAt", { ascending: false });
+
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error("Network Timeout")), 15000)
+        );
+
+        const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
 
         if (error) throw error;
 
@@ -55,7 +67,17 @@ async function loadData() {
         filterAndRender();
     } catch (e) {
         console.error("Load error:", e);
-        document.getElementById('catGamesList').innerHTML = `<div style="text-align:center; padding:40px; color:#ff5252;">❌ ဒေတာများ Load လုပ်၍မရပါ။ (${e.message})</div>`;
+        // လိုင်းမကောင်းရင် သို့မဟုတ် Timeout ဖြစ်ရင် Cache ထဲက ဒေတာကို အစားထိုးသုံးမယ်
+        if (cachedData) {
+            try {
+                allItems = JSON.parse(cachedData);
+                filterAndRender();
+                return;
+            } catch (cacheErr) {
+                console.error("Cache parse error:", cacheErr);
+            }
+        }
+        document.getElementById('catGamesList').innerHTML = `<div style="text-align:center; padding:40px; color:#ff5252;">❌ မိုဘိုင်းလိုင်း ဆက်သွယ်မှု နှေးကွေးနေပါသည် (သို့) ဒေတာ Load၍မရပါ။</div>`;
     }
 }
 
